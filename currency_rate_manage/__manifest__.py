@@ -2,9 +2,10 @@
 {
     'name': "Currency Rate Manage",
     'summary': """
-        汇率管理
+        Manage the same exchange rate for multiple companies
     """,
     'description': """
+        Manage the same exchange rate for multiple companies
         可以选择多个公司，一键创建多条相同日期相同汇率的数据
         
     """,
