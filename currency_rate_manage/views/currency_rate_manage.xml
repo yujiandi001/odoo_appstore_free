@@ -16,10 +16,11 @@
 
                         <group>
                             <field name="name" required="1"/>
-                            <field name="date" required="1"/>
-                            <field name="currency_id" required="1"/>
-                            <field name="rate" digits="[12,12]" required="1"/>
-                            <field name="company_ids" required="1" widget="many2many_tags"/>
+                            <field name="date" required="1" attrs = "{'readonly':[('currency_rate_ids','!=',[])]}"/>
+                            <field name="currency_id" required="1" attrs = "{'readonly':[('currency_rate_ids','!=',[])]}"/>
+                            <field name="rate_f2c" digits="[12,12]" required="1" attrs = "{'readonly':[('currency_rate_ids','!=',[])]}"/>
+                            <field name="rate_c2f" digits="[12,12]" required="1" attrs = "{'readonly':[('currency_rate_ids','!=',[])]}"/>
+                            <field name="company_ids" required="1" widget="many2many_tags" attrs = "{'readonly':[('currency_rate_ids','!=',[])]}"/>
 
                         </group>
                         <group>
@@ -41,7 +42,8 @@
                     <field name="name"/>
                     <field name="date"/>
                     <field name="currency_id"/>
-                    <field name="rate"/>
+                    <field name="rate_f2c"/>
+                    <field name="rate_c2f"/>
                     <field name="company_ids" widget="many2many_tags"/>
                 </tree>
             </field>

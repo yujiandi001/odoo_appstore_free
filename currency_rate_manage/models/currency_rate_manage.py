@@ -9,7 +9,8 @@ class CurrencyRateManage(models.Model):
     name = fields.Char(string="说明")
     date = fields.Date(string="日期", default=lambda self: fields.Date.today())
     currency_id = fields.Many2one("res.currency", string="币种", ondelete="cascade")
-    rate = fields.Float(string="比率", digits=0, default=1.0)
+    rate_f2c = fields.Float(string="外币 to 本币位", digits=0, default=1.0)
+    rate_c2f = fields.Float(string="本币位 to 外币", digits=0, default=1.0)
     # domain = lambda self: [('id', 'in', self.env.user.company_ids.ids)]
     company_ids = fields.Many2many("res.company", string="公司", )
     currency_rate_ids = fields.Many2many("res.currency.rate", string="关联数据", copy=False)
@@ -17,6 +18,16 @@ class CurrencyRateManage(models.Model):
     _sql_constraints = [
         ('currency_rate_check', 'CHECK (rate>0)', '货币汇率必须严格为正数'),
     ]
+
+    @api.onchange('rate_f2c')
+    def _onchange_rate_f2c(self):
+        for currency_rate in self:
+            currency_rate.rate_c2f = 1.0 / currency_rate.rate_f2c
+
+    @api.onchange('rate_c2f')
+    def _onchange_rate_c2f(self):
+        for currency_rate in self:
+            currency_rate.rate_f2c = 1.0 / currency_rate.rate_c2f
 
     def create_multi_currency_rate(self):
         self_sudo = self.sudo()
@@ -27,7 +38,7 @@ class CurrencyRateManage(models.Model):
                 "name": self.date,
                 "currency_id": self.currency_id.id,
                 "company_id": i.id,
-                "rate": self.rate,
+                "rate": self.rate_c2f,
             }
             # res = currency_rate_sudo.create(c)
             currency_rate_ids_list.append((0, 0, c))
